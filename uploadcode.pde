@@ -6,7 +6,6 @@
 
 Adafruit_PN532 nfc(SCK, MISO, MOSI, SS);
 
-byte data[16];
 
 
 void setup(void) {
@@ -39,19 +38,14 @@ void setup(void) {
 }
 
 void loop(void) {
+  uint8_t data[16];
   uint8_t success;                          
-  uint8_t uid[] = { 
-    0, 0, 0, 0, 0, 0, 0   };  
+  uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};  
   uint8_t uidLength;                        
   bool authenticated = false;               
-
-  uint8_t keya[6] = { 
-    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF   };
-
+  uint8_t keya[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
-
-  if (success) 
-  {
+  if (success){
     Serial.println("Found an ISO14443A card");
     Serial.print("  UID Lenugth: ");
     Serial.print(uidLength, DEC);
@@ -59,50 +53,33 @@ void loop(void) {
     Serial.print("  UID Value: ");
     nfc.PrintHex(uid, uidLength);
     Serial.println("");
-
-    if (uidLength != 4)
-    {
+    if (uidLength != 4){
       Serial.println("Ooops ... this doesn't seem to be a Mifare Classic card!"); 
       return;
     }
-
     Serial.println("Seems to be a Mifare Classic card (4 byte UID)");
-
     success = nfc.mifareclassic_AuthenticateBlock (uid, uidLength, 0, 0, keya);
-    if (!success)
-    {
+    if (!success){
       Serial.println("Unable to authenticate block 0 to enable card formatting!");
       return;
     }
     success = nfc.mifareclassic_FormatNDEF();
-    if (!success)
-    {
+    if (!success){
       Serial.println("Unable to format the card for NDEF");
       return;
     }
-
     Serial.println("Card has been formatted for NDEF data using MAD1");
-
     success = nfc.mifareclassic_AuthenticateBlock (uid, uidLength, 4, 0, keya);
-
-    if (!success)
-    {
+    if (!success){
       Serial.println("Authentication failed.");
       return;
     }
-
     Serial.println("Writing URI to sector 1 as an NDEF Message");
-    
-    data = {'0x42', '0x52', '0x49', '0x41', '0x4E', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00' ,'0x00', '0x00' };
-
+    data = {'B', 'R', 'I', 'A', 'N', '0', '0', '0', '0', '0', '0', '0', '0', '0' ,'0', '0' };
     success = nfc.mifareclassic_WriteDataBlock(1, data);
-    
-    if (success)
-    {
+    if (success){
       Serial.println("NDEF URI Record written to sector 1");
-    }
-    else
-    {
+    }else{
       Serial.println("NDEF Record creation failed! :(");
     }
   }
