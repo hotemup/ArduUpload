@@ -98,7 +98,7 @@ void loop(void) {
       return;
     }
 
-    success = nfc.mifareclassic_WriteNDEFURI(1, NDEF_URIPREFIX_HTTP_WWWDOT, url);
+    success = nfc.mifareclassic_WriteDataBlock(1, url);
     if (success)
     {
       Serial.println("NDEF URI Record written to sector 1");
@@ -107,20 +107,6 @@ void loop(void) {
     {
       Serial.println("NDEF Record creation failed! :(");
     }
-
-    for(int i=0;;i++){
-      url = "00000000000000000000000000000000";
-      success = nfc.mifareclassic_WriteNDEFURI(i, NDEF_URIPREFIX_HTTP_WWWDOT, url);
-      if (success)
-      {
-        Serial.println("NDEF URI Record written to sector " + i);
-      }
-      else
-      {
-        Serial.println("NDEF Record creation failed! :(");
-        break;
-      }
-     }
   }
 
   Serial.println("\n\nDone!");
