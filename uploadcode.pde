@@ -1,8 +1,8 @@
 #include <Adafruit_PN532.h>
-#define SCK  (2)
-#define MOSI (3)
-#define SS   (4)
-#define MISO (5)
+#define SCK  (24)
+#define MOSI (25)
+#define SS   (27)
+#define MISO (26)
 
 Adafruit_PN532 nfc(SCK, MISO, MOSI, SS);
 
