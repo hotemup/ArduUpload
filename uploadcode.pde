@@ -6,7 +6,8 @@
 
 Adafruit_PN532 nfc(SCK, MISO, MOSI, SS);
 
-const char * url = "Brian";
+uint8_t data[16];
+
 
 void setup(void) {
   Serial.begin(115200);
@@ -91,14 +92,11 @@ void loop(void) {
     }
 
     Serial.println("Writing URI to sector 1 as an NDEF Message");
+    
+    data = {'B', 'R', 'I', 'A', 'N', '0', '0', '0', '0', '0', '0', '0', '0', '0' ,'0', '0' };
 
-    if (strlen(url) > 38)
-    {
-      Serial.println("URI is too long ... must be less than 38 characters long");
-      return;
-    }
-
-    success = nfc.mifareclassic_WriteDataBlock(1, url);
+    success = nfc.mifareclassic_WriteDataBlock(1, data);
+    
     if (success)
     {
       Serial.println("NDEF URI Record written to sector 1");
