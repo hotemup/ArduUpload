@@ -6,7 +6,7 @@
 
 Adafruit_PN532 nfc(SCK, MISO, MOSI, SS);
 
-uint8_t data[16];
+byte data[16];
 
 
 void setup(void) {
@@ -93,7 +93,7 @@ void loop(void) {
 
     Serial.println("Writing URI to sector 1 as an NDEF Message");
     
-    data = {'B', 'R', 'I', 'A', 'N', '0', '0', '0', '0', '0', '0', '0', '0', '0' ,'0', '0' };
+    data = {'0x42', '0x52', '0x49', '0x41', '0x4E', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00', '0x00' ,'0x00', '0x00' };
 
     success = nfc.mifareclassic_WriteDataBlock(1, data);
     
