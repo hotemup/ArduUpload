@@ -19,13 +19,16 @@ void setup(void) {
     Serial.print("Didn't find PN53x board");
     while (1);
   }
-  
-  Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
-  Serial.print("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
-  Serial.print('.'); Serial.println((versiondata>>8) & 0xFF, DEC);
-  
+
+  Serial.print("Found chip PN5"); 
+  Serial.println((versiondata>>24) & 0xFF, HEX); 
+  Serial.print("Firmware ver. "); 
+  Serial.print((versiondata>>16) & 0xFF, DEC); 
+  Serial.print('.'); 
+  Serial.println((versiondata>>8) & 0xFF, DEC);
+
   nfc.SAMConfig();
-  
+
   Serial.println("");
   Serial.println("Place your Mifare Classic card on the reader to format with NDEF");
   Serial.println("and press any key to continue ...");
@@ -36,28 +39,32 @@ void setup(void) {
 
 void loop(void) {
   uint8_t success;                          
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  
+  uint8_t uid[] = { 
+    0, 0, 0, 0, 0, 0, 0   };  
   uint8_t uidLength;                        
   bool authenticated = false;               
 
-  uint8_t keya[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
-    
+  uint8_t keya[6] = { 
+    0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF   };
+
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
-  
+
   if (success) 
   {
     Serial.println("Found an ISO14443A card");
-    Serial.print("  UID Lenugth: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
+    Serial.print("  UID Lenugth: ");
+    Serial.print(uidLength, DEC);
+    Serial.println(" bytes");
     Serial.print("  UID Value: ");
     nfc.PrintHex(uid, uidLength);
     Serial.println("");
-    
+
     if (uidLength != 4)
     {
       Serial.println("Ooops ... this doesn't seem to be a Mifare Classic card!"); 
       return;
     }
-    
+
     Serial.println("Seems to be a Mifare Classic card (4 byte UID)");
 
     success = nfc.mifareclassic_AuthenticateBlock (uid, uidLength, 0, 0, keya);
@@ -72,9 +79,9 @@ void loop(void) {
       Serial.println("Unable to format the card for NDEF");
       return;
     }
-    
+
     Serial.println("Card has been formatted for NDEF data using MAD1");
-    
+
     success = nfc.mifareclassic_AuthenticateBlock (uid, uidLength, 4, 0, keya);
 
     if (!success)
@@ -82,15 +89,15 @@ void loop(void) {
       Serial.println("Authentication failed.");
       return;
     }
-    
+
     Serial.println("Writing URI to sector 1 as an NDEF Message");
-    
+
     if (strlen(url) > 38)
     {
       Serial.println("URI is too long ... must be less than 38 characters long");
       return;
     }
-    
+
     success = nfc.mifareclassic_WriteNDEFURI(1, NDEF_URIPREFIX_HTTP_WWWDOT, url);
     if (success)
     {
@@ -100,10 +107,25 @@ void loop(void) {
     {
       Serial.println("NDEF Record creation failed! :(");
     }
+
+    for(int i=0;;i++){
+      url = "00000000000000000000000000000000";
+      success = nfc.mifareclassic_WriteNDEFURI(i, NDEF_URIPREFIX_HTTP_WWWDOT, url);
+      if (success)
+      {
+        Serial.println("NDEF URI Record written to sector " + i);
+      }
+      else
+      {
+        Serial.println("NDEF Record creation failed! :(");
+        break;
+      }
+     }
   }
-  
+
   Serial.println("\n\nDone!");
   Serial.flush();
   while (!Serial.available());
   Serial.flush();
 }
+
