@@ -1,0 +1,6 @@
+h1 { padding: 15px; }
+body > * { text-align: center; margin: auto; }
+#map_canvas { width: 750px; height: 500px; }
+p { padding-top: 25px; }
+input, label, select { display: inline !important; }
+select, input { position: relative; top: 4px; }

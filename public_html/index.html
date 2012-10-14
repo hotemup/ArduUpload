@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<title>TrackRU</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=yes" />
+		<link rel="stylesheet" type="text/css" href="page.css" />
+
+		<!-- Functionality -->
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBmM2BZK0hYgzz1J6T8sCasdnxDuKbgrYg&sensor=true">
+    </script>
+    <script type="text/javascript" src="page.js"></script>
+
+		<!-- Bootstrap CSS -->
+		<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+  </head>
+  <body>
+		<h1>TrackRU</h1>
+    <div id="map_canvas"></div>
+		<p>
+			<label for="mode">Display mode: </label>
+			<select id="mode" onchange="changemode();">
+				<option value="instant">Instantaneous</option>
+				<option value="progression">Progression</option>
+			</select>
+			<div id="inst_container">
+				<label for="instant">Date/time: </label><input type="text" id="instant" />
+			</div>
+			<div id="prog_container">
+				<label for="prog_0">From </label><input type="text" id="prog_0" />
+				<label for="prog_1">to </label><input type="text" id="prog_1" />
+			</div>
+		</p>
+
+		<!-- Bootstrap JS -->
+		<script src="http://code.jquery.com/jquery-latest.js"></script>
+		<script src="bootstrap/js/bootstrap.min.js"></script>
+  </body>
+</html>
